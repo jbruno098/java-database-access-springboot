@@ -25,8 +25,8 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public void insert(@RequestBody Department dep) {
-        service.insert(dep);
+    public Department insert(@RequestBody Department dep) {
+        return service.insert(dep);
     }
 
     @DeleteMapping("/{id}")
@@ -34,7 +34,7 @@ public class DepartmentController {
         service.delete(id);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public Department update(@PathVariable Long id,@RequestBody Department dep) {
         return service.update(id,dep);
     }

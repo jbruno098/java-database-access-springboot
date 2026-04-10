@@ -22,8 +22,8 @@ public class DepartmentService {
         return repository.findAll();
     }
 
-    public void insert(Department dep) {
-        repository.save(dep);
+    public Department insert(Department dep) {
+        return repository.save(dep);
     }
 
     public void delete(Long id) {
