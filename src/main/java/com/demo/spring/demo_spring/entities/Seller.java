@@ -61,6 +61,11 @@ public class Seller {
         return birthDate;
     }
 
+    public Seller setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+        return this;
+    }
+
     public Seller setBitrhDate(LocalDate bitrhDate) {
         this.birthDate = birthDate;
         return this;
