@@ -11,7 +11,9 @@ public class Seller {
     private Long id;
     private String name;
     private String email;
-    private LocalDate bitrhDate;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
+    @Column(name = "base_salary")
     private Double baseSalary;
 
     @ManyToOne
@@ -20,11 +22,11 @@ public class Seller {
 
     public Seller(){}
 
-    public Seller(Long id, String name, String email, LocalDate bitrhDate, Double baseSalary) {
+    public Seller(Long id, String name, String email, LocalDate birthDate, Double baseSalary) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.bitrhDate = bitrhDate;
+        this.birthDate = birthDate;
         this.baseSalary = baseSalary;
     }
 
@@ -55,12 +57,12 @@ public class Seller {
         return this;
     }
 
-    public LocalDate getBitrhDate() {
-        return bitrhDate;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
     public Seller setBitrhDate(LocalDate bitrhDate) {
-        this.bitrhDate = bitrhDate;
+        this.birthDate = birthDate;
         return this;
     }
 
