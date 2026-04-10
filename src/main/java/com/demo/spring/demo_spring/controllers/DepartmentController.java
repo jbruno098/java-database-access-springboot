@@ -1,12 +1,9 @@
 package com.demo.spring.demo_spring.controllers;
 
 import com.demo.spring.demo_spring.entities.Department;
-import com.demo.spring.demo_spring.repositories.DepartmentRepository;
 import com.demo.spring.demo_spring.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,14 +14,24 @@ public class DepartmentController {
     @Autowired
     private DepartmentService service;
 
-    @GetMapping
-    public Department findById(Long id){
+    @GetMapping("/{id}")
+    public Department findById(@PathVariable Long id){
         return service.findById(id);
     }
 
     @GetMapping
     public List<Department> findAll() {
         return service.findAll();
+    }
+
+    @PostMapping
+    public void insert(@RequestBody Department dep) {
+        service.insert(dep);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 
 }
