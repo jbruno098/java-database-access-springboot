@@ -29,4 +29,12 @@ public class DepartmentService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public Department update(Long id, Department dep) {
+        Department entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+
+        entity.setName(dep.getName());
+        return repository.save(entity);
+    }
 }

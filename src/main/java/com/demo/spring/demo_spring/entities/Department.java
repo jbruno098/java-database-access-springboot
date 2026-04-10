@@ -17,7 +17,7 @@ public class Department {
         this.name = name;
     }
 
-    public Long getIdd() {
+    public Long getId() {
         return id;
     }
 
