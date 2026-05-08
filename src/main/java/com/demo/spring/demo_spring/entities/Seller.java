@@ -6,13 +6,18 @@ import java.time.LocalDate;
 
 @Entity
 public class Seller {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String email;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
+
     @Column(name = "base_salary")
     private Double baseSalary;
 
