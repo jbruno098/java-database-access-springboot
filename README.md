@@ -1,59 +1,69 @@
 # 📌 Spring Boot CRUD API
 
-Este projeto é uma API REST desenvolvida com **Spring Boot** para gerenciamento de **Departamentos** e **Vendedores (Sellers)**, implementando operações completas de CRUD e relacionamento entre entidades.
+API REST desenvolvida com **Java + Spring Boot** para gerenciamento de **Departamentos** e **Vendedores (Sellers)**, implementando operações completas de CRUD, relacionamento entre entidades e boas práticas de desenvolvimento backend.
+
+Este projeto começou como um CRUD simples e posteriormente foi refatorado para aplicar conceitos mais avançados estudados ao longo da jornada com Spring Boot.
 
 ---
 
-## 🚀 Tecnologias utilizadas
+# 🚀 Tecnologias utilizadas
 
 * Java 17+
 * Spring Boot
 * Spring Data JPA
 * Hibernate
+* Bean Validation
 * Banco de dados H2
 * Maven
 
 ---
 
-## 📂 Estrutura do projeto
+# 📂 Arquitetura do projeto
 
 O projeto segue uma arquitetura em camadas:
 
 * **Controller** → Responsável pelas requisições HTTP
-* **Service** → Contém as regras de negócio
-* **Repository** → Acesso ao banco de dados (JPA)
-* **Entities** → Representação das tabelas
+* **Service** → Regras de negócio
+* **Repository** → Acesso aos dados com JPA
+* **DTOs** → Transferência e validação de dados
+* **Entities** → Representação das tabelas do banco
+* **Exception Handling** → Tratamento global de exceções
 
 ---
 
-## 🧩 Modelo de domínio
+# 🧩 Modelo de domínio
 
-### Department
+## Department
 
 * `id`
 * `name`
 
-### Seller
+## Seller
 
 * `id`
 * `name`
 * `email`
 * `birthDate`
 * `baseSalary`
-* `department` (ManyToOne)
+* `department`
 
 ---
 
-## 🔗 Relacionamento
+# 🔗 Relacionamentos
 
-* Um **Department** pode ter vários **Sellers**
+* Um **Department** pode possuir vários **Sellers**
 * Um **Seller** pertence a um único **Department**
 
+Relacionamento implementado com:
+
+* `@OneToMany`
+* `@ManyToOne`
+
 ---
 
-## ⚙️ Funcionalidades
+# ⚙️ Funcionalidades
 
-### Department
+## Department
 
 * ✔️ Buscar todos
 * ✔️ Buscar por ID
@@ -61,7 +71,7 @@ O projeto segue uma arquitetura em camadas:
 * ✔️ Atualizar
 * ✔️ Deletar
 
-### Seller
+## Seller
 
 * ✔️ Buscar todos
 * ✔️ Buscar por ID
@@ -71,25 +81,51 @@ O projeto segue uma arquitetura em camadas:
 
 ---
 
-## 🧪 Como testar a API
+# ✅ Melhorias aplicadas na refatoração
 
-Você pode testar utilizando o **Postman** ou qualquer cliente HTTP.
+Durante a refatoração do projeto foram implementadas melhorias importantes para aproximar a aplicação de um padrão mais profissional de API REST:
 
-### 🔍 Buscar todos os departamentos
+* DTOs para transferência de dados
+* Uso de `ResponseEntity`
+* Tratamento global de exceções com `@ControllerAdvice`
+* Respostas customizadas para erros da API
+* Validação de dados com Bean Validation
+* Tratamento de erros de integridade do banco
+* Relacionamentos JPA bidirecionais
+* Padronização das respostas HTTP
+* Melhor organização da arquitetura em camadas
 
-```
+---
+
+# 🛡️ Validações implementadas
+
+## Department
+
+* Nome obrigatório
+* Nome único no banco de dados
+
+## Seller
+
+* Nome obrigatório
+* Email obrigatório
+* Email válido
+* Email único
+* Data de nascimento não pode ser futura
+* Salário não pode ser negativo
+
+---
+
+# 🧪 Exemplos de endpoints
+
+## 🔍 Buscar todos os departamentos
+
+```http
 GET /departments
 ```
 
-### 🔍 Buscar departamento por ID
+## ➕ Criar departamento
 
-```
-GET /departments/{id}
-```
-
-### ➕ Criar departamento
-
-```
+```http
 POST /departments
 ```
 
@@ -101,21 +137,15 @@ POST /departments
 
 ---
 
-### 🔍 Buscar todos os sellers
+## 🔍 Buscar todos os sellers
 
-```
+```http
 GET /sellers
 ```
 
-### 🔍 Buscar seller por ID
+## ➕ Criar seller
 
-```
-GET /sellers/{id}
-```
-
-### ➕ Criar seller
-
-```
+```http
 POST /sellers
 ```
 
@@ -131,54 +161,44 @@ POST /sellers
 }
 ```
 
-### 🔄 Atualizar seller
+---
 
-```
-PUT /sellers/{id}
-```
+# ⚠️ Tratamento de exceções
 
-### ❌ Deletar seller
+A API possui tratamento global de exceções para cenários como:
 
-```
-DELETE /sellers/{id}
-```
+* Recurso não encontrado (`404`)
+* Dados inválidos (`422`)
+* Violação de integridade do banco (`400`)
 
 ---
 
-## 🗄️ Banco de dados
+# 🗄️ Banco de dados
 
-O projeto utiliza o banco H2 em memória:
+O projeto utiliza banco H2 em memória:
 
-```
+```properties
 jdbc:h2:mem:demo_spring
 ```
 
-Os dados iniciais são carregados automaticamente via arquivo `import.sql`.
+Os dados iniciais são carregados automaticamente via `import.sql`.
 
-⚠️ Observação: os dados são resetados sempre que a aplicação é reiniciada.
+> ⚠️ Os dados são resetados sempre que a aplicação é reiniciada.
 
 ---
 
-## 🎯 Objetivo do projeto
+# 🎯 Objetivo do projeto
 
 Este projeto foi desenvolvido com o objetivo de:
 
 * Consolidar conhecimentos em Spring Boot
 * Aplicar conceitos de API REST
-* Trabalhar com JPA e ORM
-* Evoluir de JDBC puro para uma abordagem com framework
+* Trabalhar com JPA/Hibernate
+* Evoluir de JDBC puro para uma arquitetura baseada em framework
+* Praticar refatoração e boas práticas de backend
 
 ---
 
-## 📌 Próximos passos (melhorias futuras)
+# 👨‍💻 Autor
 
-* Implementar tratamento de exceções (HTTP 404, 400, etc.)
-* Utilizar `ResponseEntity` nas respostas
-* Adicionar DTOs para melhor organização
-* Migrar para banco de dados persistente (MySQL/PostgreSQL)
-
----
-
-## 👨‍💻 Autor
-
-Desenvolvido por **Bruno** 🚀
+Desenvolvido por **Joelson Bruno Costa Rodrigues** 🚀
