@@ -1,11 +1,16 @@
 package com.demo.spring.demo_spring.services;
 
+import com.demo.spring.demo_spring.dto.SellerDTO;
 import com.demo.spring.demo_spring.entities.Department;
 import com.demo.spring.demo_spring.entities.Seller;
+import com.demo.spring.demo_spring.exceptions.DatabaseException;
+import com.demo.spring.demo_spring.exceptions.ResourceNotFoundException;
 import com.demo.spring.demo_spring.repositories.DepartmentRepository;
 import com.demo.spring.demo_spring.repositories.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,35 +23,69 @@ public class SellerService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-    public List<Seller> findAll() {
-        return repository.findAll();
+    @Transactional(readOnly = true)
+    public List<SellerDTO> findAll() {
+        List<Seller> result = repository.findAll();
+        return result.stream().map(SellerDTO::new).toList();
     }
 
-    public Seller findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Seller not found"));
+    @Transactional(readOnly = true)
+    public SellerDTO findById(Long id) {
+        Seller entity = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Seller not found"));
+        return new SellerDTO(entity);
     }
 
-    public Seller insert(Seller sel) {
-        return repository.save(sel);
+    @Transactional
+    public SellerDTO insert(SellerDTO dto) {
+            try {
+                Seller entity = new Seller();
+                entity.setName(dto.getName());
+                entity.setEmail(dto.getEmail());
+                entity.setBirthDate(dto.getBirthDate());
+                entity.setBaseSalary(dto.getBaseSalary());
+
+                Department dept = departmentRepository.findById(dto.getDepartment().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
+
+                entity.setDepartment(dept);
+                entity = repository.save(entity);
+
+                return new SellerDTO(entity);
+
+            } catch (DataIntegrityViolationException e) {
+                throw new DatabaseException("Email already exists");
+            }
     }
 
-    public Seller update(Long id, Seller obj) {
-        Seller seller = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
+    @Transactional
+    public SellerDTO update(Long id, SellerDTO dto) {
+        Seller entity = repository.getReferenceById(id);
+        Department dept = departmentRepository.getReferenceById(dto.getDepartment().getId());
 
-        Department dep = departmentRepository.findById(obj.getDepartment().getId())
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+        entity.setName(dto.getName());
+        entity.setEmail(dto.getEmail());
+        entity.setBirthDate(dto.getBirthDate());
+        entity.setBaseSalary(dto.getBaseSalary());
+        entity.setDepartment(dept);
 
-        seller.setName(obj.getName());
-        seller.setEmail(obj.getEmail());
-        seller.setBirthDate(obj.getBirthDate());
-        seller.setBaseSalary(obj.getBaseSalary());
-        seller.setDepartment(dep);
-
-        return repository.save(seller);
+        entity = repository.save(entity);
+        return new SellerDTO(entity);
     }
 
+    @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+
+        if(!repository.existsById(id)) {
+            throw new ResourceNotFoundException("ID dont exists");
+        }
+        try {
+            repository.deleteById(id);
+            repository.flush();
+
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Integrity violation");
+        }
     }
+
 }

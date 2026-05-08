@@ -13,6 +13,7 @@ public class Seller {
 
     private String name;
 
+    @Column(unique = true)
     private String email;
 
     @Column(name = "birth_date")

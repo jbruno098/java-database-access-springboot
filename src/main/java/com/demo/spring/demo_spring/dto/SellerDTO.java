@@ -1,6 +1,9 @@
 package com.demo.spring.demo_spring.dto;
 
 import com.demo.spring.demo_spring.entities.Seller;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 
@@ -8,12 +11,16 @@ public class SellerDTO {
 
     private Long id;
 
+    @NotBlank(message = "Name is required")
     private String name;
 
+    @NotBlank(message = "Email is required")
     private String email;
 
+    @PastOrPresent(message = "Birth date cannot be in the future")
     private LocalDate birthDate;
 
+    @PositiveOrZero(message = "Salary cannot be negative")
     private Double baseSalary;
 
     private DepartmentDTO department;
