@@ -1,9 +1,11 @@
 package com.demo.spring.demo_spring.services;
 
+import com.demo.spring.demo_spring.dto.DepartmentDTO;
 import com.demo.spring.demo_spring.entities.Department;
 import com.demo.spring.demo_spring.repositories.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,28 +15,37 @@ public class DepartmentService {
     @Autowired
     private DepartmentRepository repository;
 
-    public Department findById(Long id) {
-        return repository.findById(id)
+    @Transactional(readOnly = true)
+    public DepartmentDTO findById(Long id) {
+        Department department = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Department not found"));
+        return new DepartmentDTO(department);
     }
 
-    public List<Department> findAll() {
-        return repository.findAll();
+    @Transactional(readOnly = true)
+    public List<DepartmentDTO> findAll() {
+        List<Department> result = repository.findAll();
+        return result.stream().map(DepartmentDTO::new).toList();
     }
 
-    public Department insert(Department dep) {
-        return repository.save(dep);
+    @Transactional
+    public DepartmentDTO insert(DepartmentDTO dto) {
+        Department dept = new Department();
+        dept.setName(dto.getName());
+        dept = repository.save(dept);
+        return new DepartmentDTO(dept);
     }
 
+    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }
 
-    public Department update(Long id, Department dep) {
-        Department entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found"));
-
-        entity.setName(dep.getName());
-        return repository.save(entity);
+    @Transactional
+    public DepartmentDTO update(Long id, DepartmentDTO dto) {
+        Department entity = repository.getReferenceById(id);
+        entity.setName(dto.getName());
+        entity = repository.save(entity);
+        return new DepartmentDTO(entity);
     }
 }
