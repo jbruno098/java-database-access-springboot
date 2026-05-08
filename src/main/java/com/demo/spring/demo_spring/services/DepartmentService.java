@@ -34,10 +34,16 @@ public class DepartmentService {
 
     @Transactional
     public DepartmentDTO insert(DepartmentDTO dto) {
-        Department dept = new Department();
-        dept.setName(dto.getName());
-        dept = repository.save(dept);
-        return new DepartmentDTO(dept);
+
+        try {
+            Department dept = new Department();
+            dept.setName(dto.getName());
+            dept = repository.save(dept);
+            return new DepartmentDTO(dept);
+
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Department name already exists");
+        }
     }
 
     @Transactional

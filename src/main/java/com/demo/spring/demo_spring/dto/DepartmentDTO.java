@@ -1,10 +1,13 @@
 package com.demo.spring.demo_spring.dto;
 
 import com.demo.spring.demo_spring.entities.Department;
+import jakarta.validation.constraints.NotBlank;
 
 public class DepartmentDTO {
 
     private Long id;
+
+    @NotBlank(message = "Name is required")
     private String name;
 
     public DepartmentDTO() {

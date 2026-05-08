@@ -2,6 +2,7 @@ package com.demo.spring.demo_spring.controllers;
 
 import com.demo.spring.demo_spring.dto.DepartmentDTO;
 import com.demo.spring.demo_spring.services.DepartmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<DepartmentDTO> insert(@RequestBody DepartmentDTO dto) {
+    public ResponseEntity<DepartmentDTO> insert(@Valid @RequestBody DepartmentDTO dto) {
         dto =  service.insert(dto);
 
         URI uri = ServletUriComponentsBuilder
